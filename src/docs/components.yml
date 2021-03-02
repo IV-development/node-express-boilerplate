@@ -18,7 +18,24 @@ components:
         email: fake@example.com
         name: fake name
         role: user
-
+    Translation:
+      type: object
+      properties:
+        source_text:
+          type: string
+        target_text:
+          type: string
+        target_lang:
+          type: string
+          enum: [EN, DE, FR, ES, PT, IT, NL, PL, RU]
+        source_lang:
+          type: string
+          enum: [EN, DE, FR, ES, PT, IT, NL, PL, RU]
+      example:
+        source_text: Bunny
+        target_text: Hare
+        target_lang: DE
+        source_lang: EN
     Token:
       type: object
       properties:
