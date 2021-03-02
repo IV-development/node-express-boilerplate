@@ -17,6 +17,9 @@ const envVarsSchema = Joi.object()
     SMTP_USERNAME: Joi.string().description('username for email server'),
     SMTP_PASSWORD: Joi.string().description('password for email server'),
     EMAIL_FROM: Joi.string().description('the from field in the emails sent by the app'),
+    DEEPL_API_KEY: Joi.string().description('Deepl API key'),
+    TRANSLATION_LANGS: Joi.string().description('Enabled translation languages'),
+    TRANSLATION_EXPIRATION: Joi.number().description('Number of days after which translation expires'),
   })
   .unknown();
 
@@ -24,6 +27,14 @@ const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' }
 
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
+}
+
+// Prepare validation configuration
+let enabledLanguages = envVars.TRANSLATION_LANGS.split(',');
+
+// user didn't set-up the languages, so use the default ones
+if (!Array.isArray(enabledLanguages) || !(enabledLanguages.length > 0)) {
+  enabledLanguages = ['EN', 'DE', 'FR', 'ES', 'PT', 'IT', 'NL', 'PL', 'RU'];
 }
 
 module.exports = {
@@ -53,5 +64,10 @@ module.exports = {
       },
     },
     from: envVars.EMAIL_FROM,
+  },
+  translation: {
+    api_key: envVars.DEEPL_API_KEY,
+    languages: enabledLanguages,
+    expires_in: envVars.TRANSLATION_EXPIRATION,
   },
 };
